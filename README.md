@@ -296,15 +296,68 @@ npm run build
 ## 项目结构
 
 ```
-project/
-├── src/
-│   ├── App.vue          # 主组件
-│   ├── main.ts          # 入口文件
-│   └── vite-env.d.ts    # Vite 类型定义
-├── index.html           # HTML 模板
-├── package.json         # 项目配置
-├── tsconfig.json        # TypeScript 配置
-└── vite.config.ts       # Vite 配置
+my-vue-app/
+├─ .env.development    # 开发环境变量
+├─ .eslintrc           # ESLint 配置
+├─ tsconfig.json       # TypeScript 配置
+├─ vite.config.ts      # Vite 配置
+│
+└─ src/
+   ├─ main.ts          # 初始化 Vue 实例
+   ├─ App.vue          # 根组件
+   │
+   ├─ assets/          # 静态资源
+   │  ├─ images/       # 图片
+   │  ├─ icons/        # 图标
+   │  └─ styles/       # 全局样式
+   │     ├── variables.scss  # SCSS变量
+   │     ├── mixins.scss     # SCSS混合
+   │     └── global.scss     # 全局样式
+   │
+   ├─ components/      # 公共组件
+   │  ├── BaseButton.vue
+   │  └── BaseCard.vue
+   │
+   ├─ composables/     # 组合式函数
+   │  ├── useFetch.js
+   │  └── useLocalStorage.js
+   │
+   ├─ directives/      # 自定义指令
+   │  └── focus.js
+   │
+   ├─ features/        # 功能模块（替代 views）
+   │  ├─ product/      # 商品模块
+   │  │  ├─ components/
+   │  │  ├─ api/
+   │  │  └─ store/
+   │  │
+   │  └─ order/        # 订单模块
+   │
+   ├─ layouts/         # 布局组件
+   │  ├── DefaultLayout.vue
+   │  └── AuthLayout.vue
+   │
+   ├─ middleware/      # 路由中间件
+   │  └── auth.js
+   │
+   ├─ pages/           # 页面组件
+   │  ├── Home.vue
+   │  └── About.vue
+   │
+   ├─ plugins/         # 插件
+   │  └── axios.js
+   │
+   ├─ router/          # 路由配置
+   │  ├── index.js
+   │  └── routes.js
+   │
+   ├─ stores/          # Pinia状态管理
+   │  ├── counter.js
+   │  └── user.js
+   │
+   └─ utils/           # 工具函数
+      ├── formatDate.js
+      └── debounce.js
 ```
 
 ## 技术栈
