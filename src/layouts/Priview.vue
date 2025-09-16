@@ -12,6 +12,6 @@ import { ref } from 'vue';
 <style scoped>
 .priview {
   height: 100%;
-  background: blanchedalmond;
+  background: #E7F2EF;
 }
 </style>

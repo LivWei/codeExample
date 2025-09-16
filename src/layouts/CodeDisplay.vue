@@ -12,5 +12,6 @@ import { ref } from 'vue';
 <style scoped>
 .code-display {
   height: 100%;
+  background-color: #A1C2BD;
 }
 </style>

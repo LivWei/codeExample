@@ -12,8 +12,8 @@ import { ref } from 'vue';
 .header {
   height: 60px;
   background-color: #ffffff;
-  color: #000000;
+  color: #ffffff;
   padding: 10px;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--color1);
 }
 </style>
