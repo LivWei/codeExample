@@ -48,7 +48,7 @@ import { useFileStore } from '@/stores/fileStore';
 import { storeToRefs } from 'pinia';
 
 const fileStore = useFileStore()
-const { currentFileContent, currentFileName, currentFileType, isLoading, error } = storeToRefs(fileStore)
+const { currentFileContent, currentFileName, currentFileType, isLoading, error, showPreview } = storeToRefs(fileStore)
 
 const code = ref(
   `var i = 0;
@@ -147,8 +147,23 @@ const runCode = () => {
     const editor = cmRef.value.cminstance;
     const content = editor.getValue();
     console.log('运行代码:', content);
+    
+    // 如果是HTML文件，运行并预览
+    if (currentFileType.value.toLowerCase() === 'html') {
+      fileStore.runHTMLCode(content);
+    } else {
+      // 对于其他类型的文件，可以在这里添加相应的运行逻辑
+      ElMessage({
+        message: '暂不支持该文件类型的运行',
+        type: 'warning',
+      });
+    }
   } catch (err) {
     console.error('运行代码失败:', err);
+    ElMessage({
+      message: '运行代码失败',
+      type: 'error',
+    });
   }
 };
 </script>

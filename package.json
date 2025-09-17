@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "codemirror": "5",
     "codemirror-editor-vue3": "^2.8.0",
     "element-plus": "^2.11.2",
