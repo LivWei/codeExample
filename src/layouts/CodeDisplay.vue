@@ -9,8 +9,16 @@
 <template>
   <div class="code-display">
     <div class="code-display-header">
-      <el-button type="primary" size="small" @click="copyCode">复制</el-button>
-      <el-button type="success" size="small" @click="runCode">运行</el-button>
+      <div class="file-info">
+        <span v-if="currentFileName" class="file-name">{{ currentFileName }}</span>
+        <span v-else class="no-file">未选择文件</span>
+        <span v-if="isLoading" class="loading">加载中...</span>
+        <span v-if="error" class="error">{{ error }}</span>
+      </div>
+      <div class="header-buttons">
+        <el-button type="primary" size="small" @click="copyCode">复制</el-button>
+        <el-button type="success" size="small" @click="runCode">运行</el-button>
+      </div>
     </div>
     <Codemirror
       v-model:value="code"
@@ -27,12 +35,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import "codemirror/mode/javascript/javascript.js";
+import "codemirror/mode/xml/xml.js";
+import "codemirror/mode/css/css.js";
+import "codemirror/mode/htmlmixed/htmlmixed.js";
 import Codemirror from "codemirror-editor-vue3";
 import type { CmComponentRef } from "codemirror-editor-vue3";
 import type { Editor, EditorConfiguration } from "codemirror";
 import { ElMessage } from "element-plus";
+import { useFileStore } from '@/stores/fileStore';
+import { storeToRefs } from 'pinia';
+
+const fileStore = useFileStore()
+const { currentFileContent, currentFileName, currentFileType, isLoading, error } = storeToRefs(fileStore)
 
 const code = ref(
   `var i = 0;
@@ -43,8 +59,24 @@ for (; i < 9; i++) {
 `
 );
 const cmRef = ref<CmComponentRef>();
+
+// 根据文件类型获取编辑器模式
+const getEditorMode = (fileType: string): string => {
+  switch (fileType.toLowerCase()) {
+    case 'html':
+      return 'text/html'
+    case 'css':
+      return 'text/css'
+    case 'js':
+    case 'javascript':
+      return 'text/javascript'
+    default:
+      return 'text/javascript'
+  }
+}
+
 const cmOptions: EditorConfiguration = {
-  mode: "text/javascript",
+  mode: getEditorMode(currentFileType.value),
   lineWrapping: true,
   lineNumbers: true,
   viewportMargin: Infinity, // 使编辑器自动匹配容器大小
@@ -63,6 +95,22 @@ const onReady = (cm: Editor) => {
 };
 
 onMounted(() => {
+  // 监听文件内容变化
+  watch(currentFileContent, (newContent) => {
+    if (newContent && cmRef.value) {
+      const editor = cmRef.value.cminstance
+      editor.setValue(newContent)
+    }
+  })
+
+  // 监听文件类型变化，更新编辑器模式
+  watch(currentFileType, (newType) => {
+    if (cmRef.value && newType) {
+      const editor = cmRef.value.cminstance
+      const newMode = getEditorMode(newType)
+      editor.setOption('mode', newMode)
+    }
+  })
 });
 
 onUnmounted(() => {
@@ -114,9 +162,40 @@ const runCode = () => {
     background-color: var(--color2);
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: 0 20px;
     box-sizing: border-box;
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .file-name {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .no-file {
+        color: #999;
+        font-style: italic;
+      }
+
+      .loading {
+        color: #409eff;
+        font-size: 12px;
+      }
+
+      .error {
+        color: #f56c6c;
+        font-size: 12px;
+      }
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
   }
 }
 </style>

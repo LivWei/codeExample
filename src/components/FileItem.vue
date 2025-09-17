@@ -8,7 +8,7 @@
       <span>📁{{ child.name }}</span>
     </template>
     <el-menu-item-group>
-      <el-menu-item v-for="(m, n) in child.children" :index="n + m.path"
+      <el-menu-item v-for="m in child.children" :index="m.path"
         >📄{{ m.name }}</el-menu-item
       >
     </el-menu-item-group>

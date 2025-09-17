@@ -24,11 +24,14 @@
 import { ref, onMounted } from 'vue';
 import FileItem from '@/components/FileItem.vue';
 import { scanPublicDirectory, type FileInfo } from '@/utils/fileScanner';
+import { useFileStore } from '@/stores/fileStore';
 
 const fileStructure = ref<FileInfo[]>([]);
 const loading = ref(true);
 const error = ref('');
 const activeIndex = ref('');
+
+const fileStore = useFileStore();
 
 onMounted(async () => {
   try {
@@ -43,6 +46,11 @@ onMounted(async () => {
 
 const handleSelect = (path: string) => {
   console.log('选中文件:', path);
+  
+  // 检查是否为HTML文件
+  if (path.toLowerCase().endsWith('.html')) {
+    fileStore.loadFile(path);
+  }
 }
 
 </script>

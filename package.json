@@ -12,6 +12,7 @@
     "codemirror": "5",
     "codemirror-editor-vue3": "^2.8.0",
     "element-plus": "^2.11.2",
+    "pinia": "^3.0.3",
     "vue": "^3.3.8"
   },
   "devDependencies": {

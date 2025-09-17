@@ -19,12 +19,12 @@ export function scanPublicDirectory(): Promise<FileInfo[]> {
     const publicStructure: FileInfo[] = [
       {
         name: 'code',
-        path: '/public/code',
+        path: '',
         isDirectory: true,
         children: [
           {
             name: 'css',
-            path: '/public/code/css',
+            path: '',
             isDirectory: true,
             children: [
               {
@@ -33,6 +33,11 @@ export function scanPublicDirectory(): Promise<FileInfo[]> {
                 isDirectory: false
               }
             ]
+          },
+          {
+            name: 'test.html',
+            path: '/public/code/test.html',
+            isDirectory: false
           },
           {
             name: 'openlayers',
@@ -100,20 +105,4 @@ export function scanPublicDirectory(): Promise<FileInfo[]> {
     
     resolve(publicStructure);
   });
-}
-
-/**
- * 递归遍历文件结构并以扁平化数组形式返回
- * @param files 文件信息数组
- * @param result 结果数组
- * @returns 扁平化的文件路径数组
- */
-export function flattenFileStructure(files: FileInfo[], result: string[] = []): string[] {
-  for (const file of files) {
-    result.push(file.path);
-    if (file.children && file.children.length > 0) {
-      flattenFileStructure(file.children, result);
-    }
-  }
-  return result;
 }
