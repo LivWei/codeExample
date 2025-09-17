@@ -9,10 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "codemirror": "5",
+    "codemirror-editor-vue3": "^2.8.0",
     "element-plus": "^2.11.2",
     "vue": "^3.3.8"
   },
   "devDependencies": {
+    "@types/codemirror": "^5.60.16",
     "@vitejs/plugin-vue": "^4.4.1",
     "sass": "^1.92.1",
     "typescript": "^5.2.2",

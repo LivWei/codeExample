@@ -51,7 +51,7 @@ const handleSelect = (path: string) => {
 .catalog {
   height: 100%;
   width: 200px;
-  background-color: #708993;
+  background-color: var(--color3);
   border-right: 1px solid #e5e5e5;
 }
 </style>
