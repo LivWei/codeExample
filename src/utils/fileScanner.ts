@@ -1,3 +1,11 @@
+/*
+ * @Author: 刘威 893624020@qq.com
+ * @Date: 2025-09-16 16:05:15
+ * @LastEditors: 刘威 893624020@qq.com
+ * @LastEditTime: 2025-09-18 13:39:45
+ * @FilePath: \codeExample\src\utils\fileScanner.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 // 模拟文件系统结构 - 在实际应用中，这些数据应该从服务器API获取
 export interface FileInfo {
   name: string;
@@ -15,94 +23,17 @@ export interface FileInfo {
 export function scanPublicDirectory(): Promise<FileInfo[]> {
   // 模拟异步操作
   return new Promise((resolve) => {
-    // 根据已知的项目结构创建模拟数据
-    const publicStructure: FileInfo[] = [
-      {
-        name: 'code',
-        path: '',
-        isDirectory: true,
-        children: [
-          {
-            name: 'css',
-            path: '',
-            isDirectory: true,
-            children: [
-              {
-                name: '1.html',
-                path: '/public/code/css/1.html',
-                isDirectory: false
-              }
-            ]
-          },
-          {
-            name: 'test.html',
-            path: '/public/code/test.html',
-            isDirectory: false
-          },
-          {
-            name: 'openlayers',
-            path: '/public/code/openlayers',
-            isDirectory: true,
-            children: [
-              {
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              },{
-                name: '1.html',
-                path: '/public/code/openlayers/1.html',
-                isDirectory: false
-              }
-            ]
-          }
-        ]
-      }
-    ];
-    
-    resolve(publicStructure);
+    fetch('/public/catalog.json')
+      .then(response => response.json())
+      .then(data => {
+        // 使用请求到的data作为publicStructure的值
+        const publicStructure: FileInfo[] = [data];
+        console.log('publicStructure', publicStructure);
+        resolve(publicStructure);
+      })
+      .catch(error => {
+        console.error('Error fetching catalog:', error);
+        resolve([]);
+      });
   });
 }

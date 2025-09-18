@@ -2,7 +2,7 @@
  * @Author: 刘威 893624020@qq.com
  * @Date: 2025-09-12 14:44:26
  * @LastEditors: 刘威 893624020@qq.com
- * @LastEditTime: 2025-09-17 14:00:41
+ * @LastEditTime: 2025-09-18 13:40:58
  * @FilePath: \codeExample\src\layouts\CodeDisplay.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -11,7 +11,7 @@
     <div class="code-display-header">
       <div class="file-info">
         <span v-if="currentFileName" class="file-name">{{ currentFileName }}</span>
-        <span v-else class="no-file">未选择文件</span>
+        <span v-else class="no-file">请选择左侧目录的文件</span>
         <span v-if="isLoading" class="loading">加载中...</span>
         <span v-if="error" class="error">{{ error }}</span>
       </div>
@@ -48,16 +48,9 @@ import { useFileStore } from '@/stores/fileStore';
 import { storeToRefs } from 'pinia';
 
 const fileStore = useFileStore()
-const { currentFileContent, currentFileName, currentFileType, isLoading, error, showPreview } = storeToRefs(fileStore)
+const { currentFileContent, currentFileName, currentFileType, isLoading, error } = storeToRefs(fileStore)
 
-const code = ref(
-  `var i = 0;
-for (; i < 9; i++) {
-    console.log(i);
-    // more statements
-}
-`
-);
+const code = ref(currentFileContent.value || '');
 const cmRef = ref<CmComponentRef>();
 
 // 根据文件类型获取编辑器模式
