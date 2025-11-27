@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定位</title>
+
+    <script src="./CesiumUnminified/Cesium.js"></script>
+    <link rel="stylesheet" href="./CesiumUnminified/Widgets/widgets.css">
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .btns {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+
+    <div class="btns">
+        <button id="btn1">定位到北京</button>
+        <button id="btn2">相机立即定位到上海</button>
+        <button id="btn3">添加标记并定位到广州</button>
+        <button id="btn4">定位到中国范围</button>
+        <button id="btn5">环绕查看武汉</button>
+        <button id="btn6">跟踪实体移动</button>
+        <button id="btn7">查看地球全景</button>
+        <button id="btn8">沿路径飞行</button>
+    </div>
+
+    <script>
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+
+            imageryProvider: false, //关闭默认底图
+
+            animation: false,//是否创建动画小器件，左下角仪表    
+
+            baseLayerPicker: false,//是否显示图层选择器，右上角图层选择按钮
+
+            fullscreenButton: false,//是否显示全屏按钮，右下角全屏选择按钮
+
+            geocoder: false,//是否显示geocoder小器件，右上角查询按钮    
+
+            homeButton: false,//是否显示Home按钮，右上角home按钮 
+
+            sceneMode: Cesium.SceneMode.SCENE3D,//初始场景模式
+
+            sceneModePicker: false,//是否显示3D/2D选择器，右上角按钮 
+
+            navigationHelpButton: false,//是否显示右上角的帮助按钮  
+
+            selectionIndicator: false,//是否显示选取指示器组件   
+
+            timeline: false,//是否显示时间轴    
+
+            infoBox: false,//是否显示信息框   
+
+            scene3DOnly: true,//如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源  
+
+            orderIndependentTranslucency: false, //是否启用无序透明
+
+            contextOptions: { webgl: { alpha: true } }, //是否启用alpha通道
+
+            skyBox: new Cesium.SkyBox({ show: false }) //是否显示天空盒
+        })
+
+        viewer.scene.sun.show = false //是否显示太阳
+
+        viewer.scene.moon.show = false //是否显示月亮
+
+        viewer.scene.skyBox.show = false //是否显示天空盒
+
+        viewer.scene.backgroundColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0) //设置背景颜色
+
+        viewer._cesiumWidget._creditContainer.style.display = "none" //是否显示版权信息
+
+        console.log(Cesium.VERSION)
+
+
+        // 天地图影像图层
+        viewer.imageryLayers.addImageryProvider(
+            new Cesium.WebMapTileServiceImageryProvider({
+                url: "https://t0.tianditu.gov.cn/img_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+                layer: "tdtImgBasicLayer",
+                style: "default",
+                format: "image/jpeg",
+                tileMatrixSetID: "GoogleMapsCompatible"
+            })
+        )
+
+        // 天地图注记图层
+        viewer.imageryLayers.addImageryProvider(
+            new Cesium.WebMapTileServiceImageryProvider({
+                url: "https://t0.tianditu.gov.cn/cva_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=cva&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+                layer: "tdtAnnoLayer",
+                style: "default",
+                format: "image/jpeg",
+                tileMatrixSetID: "GoogleMapsCompatible"
+            })
+        )
+
+        // 天地图境界线
+        viewer.imageryLayers.addImageryProvider(
+            new Cesium.WebMapTileServiceImageryProvider({
+                url: "https://t0.tianditu.gov.cn/ibo_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=ibo&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+                layer: "tdtBoundaryLayer",
+                style: "default",
+                format: "image/jpeg",
+                tileMatrixSetID: "GoogleMapsCompatible"
+            })
+        )
+
+        // 1. 使用camera.flyTo()方法 - 带动画效果的飞行定位到北京
+        document.getElementById('btn1').addEventListener('click', function() {
+            viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(116.4074, 39.9042, 10000),
+                orientation: {
+                    heading: Cesium.Math.toRadians(0.0),
+                    pitch: Cesium.Math.toRadians(-45.0),
+                    roll: 0.0
+                },
+                duration: 3.0 // 飞行时间，单位：秒
+            });
+        });
+
+        // 2. 使用camera.setView()方法 - 立即切换视角定位到上海
+        document.getElementById('btn2').addEventListener('click', function() {
+            viewer.camera.setView({
+                destination: Cesium.Cartesian3.fromDegrees(121.4737, 31.2304, 10000),
+                orientation: {
+                    heading: Cesium.Math.toRadians(0.0),
+                    pitch: Cesium.Math.toRadians(-45.0),
+                    roll: 0.0
+                }
+            });
+        });
+
+        // 3. 添加标记并使用viewer.zoomTo()方法定位到广州
+        document.getElementById('btn3').addEventListener('click', function() {
+            // 创建一个点实体
+            const guangzhouEntity = viewer.entities.add({
+                name: '广州',
+                position: Cesium.Cartesian3.fromDegrees(113.2644, 23.1291),
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.YELLOW,
+                    outlineColor: Cesium.Color.BLACK,
+                    outlineWidth: 2
+                },
+                label: {
+                    text: '广州',
+                    font: '14pt monospace',
+                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    pixelOffset: new Cesium.Cartesian2(0, -9)
+                }
+            });
+
+            // 使用zoomTo方法定位到实体
+            viewer.zoomTo(guangzhouEntity);
+        });
+
+        // 4. 定位到中国范围
+        document.getElementById('btn4').addEventListener('click', function() {
+            // 定义中国范围的矩形
+            const chinaRectangle = Cesium.Rectangle.fromDegrees(73.66, 3.86, 135.05, 53.55);
+            
+            viewer.camera.flyTo({
+                destination: chinaRectangle,
+                duration: 3.0
+            });
+        });
+
+        // 5. 环绕查看武汉 - 使用lookAt和相机旋转
+        document.getElementById('btn5').addEventListener('click', function() {
+            const wuhanPosition = Cesium.Cartesian3.fromDegrees(114.3055, 30.5928, 5000);
+            
+            // 设置相机初始位置和朝向
+            viewer.camera.setView({
+                destination: wuhanPosition,
+                orientation: {
+                    heading: 0.0,
+                    pitch: Cesium.Math.toRadians(-45.0),
+                    roll: 0.0
+                }
+            });
+            
+            // 创建环绕效果
+            let heading = 0.0;
+            const intervalId = setInterval(function() {
+                heading += Cesium.Math.toRadians(1.0); // 每次旋转1度
+                if (heading >= Cesium.Math.toRadians(360.0)) {
+                    clearInterval(intervalId); // 完成一圈后停止
+                }
+                
+                viewer.camera.lookAt(
+                    Cesium.Cartesian3.fromDegrees(114.3055, 30.5928),
+                    new Cesium.HeadingPitchRange(
+                        heading,
+                        Cesium.Math.toRadians(-45.0),
+                        5000
+                    )
+                );
+            }, 30); // 每30毫秒更新一次
+        });
+
+        // 6. 跟踪实体移动
+        document.getElementById('btn6').addEventListener('click', function() {
+            // 创建一个移动的实体
+            const movingEntity = viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(108.9402, 34.3416, 1000),
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.RED,
+                    outlineColor: Cesium.Color.WHITE,
+                    outlineWidth: 2
+                },
+                label: {
+                    text: '移动目标',
+                    font: '14pt monospace',
+                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    pixelOffset: new Cesium.Cartesian2(0, -9)
+                },
+                path: {
+                    show: true,
+                    material: Cesium.Color.CYAN,
+                    width: 2
+                }
+            });
+
+            // 设置实体位置随时间变化
+            const startTime = Cesium.JulianDate.now();
+            const endTime = Cesium.JulianDate.addSeconds(startTime, 60, new Cesium.JulianDate()); // 60秒的动画
+            
+            movingEntity.position = new Cesium.SampledPositionProperty();
+            
+            // 添加采样点
+            const points = [
+                { lon: 108.9402, lat: 34.3416, time: 0 },
+                { lon: 109.0, lat: 34.4, time: 15 },
+                { lon: 109.1, lat: 34.3, time: 30 },
+                { lon: 109.0, lat: 34.2, time: 45 },
+                { lon: 108.9402, lat: 34.3416, time: 60 }
+            ];
+            
+            points.forEach(point => {
+                const time = Cesium.JulianDate.addSeconds(startTime, point.time, new Cesium.JulianDate());
+                const position = Cesium.Cartesian3.fromDegrees(point.lon, point.lat, 1000);
+                movingEntity.position.addSample(time, position);
+            });
+            
+            // 设置跟踪实体
+            viewer.trackedEntity = movingEntity;
+            
+            // 设置时间轴
+            viewer.clock.startTime = startTime.clone();
+            viewer.clock.stopTime = endTime.clone();
+            viewer.clock.currentTime = startTime.clone();
+            viewer.clock.multiplier = 1; // 实时播放
+            viewer.clock.shouldAnimate = true;
+            
+            // 10秒后停止跟踪
+            setTimeout(() => {
+                viewer.trackedEntity = undefined;
+            }, 10000);
+        });
+
+        // 7. 查看地球全景
+        document.getElementById('btn7').addEventListener('click', function() {
+            viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(0, 0, 20000000), // 20000公里高度
+                orientation: {
+                    heading: 0.0,
+                    pitch: Cesium.Math.toRadians(-90.0), // 垂直向下
+                    roll: 0.0
+                },
+                duration: 3.0
+            });
+        });
+
+        // 8. 沿路径飞行
+        document.getElementById('btn8').addEventListener('click', function() {
+            // 定义飞行路径点
+            const pathPoints = [
+                { lon: 116.4074, lat: 39.9042, height: 10000 },  // 北京
+                { lon: 121.4737, lat: 31.2304, height: 10000 },  // 上海
+                { lon: 113.2644, lat: 23.1291, height: 10000 },  // 广州
+                { lon: 104.0668, lat: 30.5728, height: 10000 }   // 成都
+            ];
+            
+            let currentIndex = 0;
+            
+            function flyToNextPoint() {
+                if (currentIndex >= pathPoints.length) {
+                    return; // 路径结束
+                }
+                
+                const point = pathPoints[currentIndex];
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(point.lon, point.lat, point.height),
+                    orientation: {
+                        heading: Cesium.Math.toRadians(0.0),
+                        pitch: Cesium.Math.toRadians(-45.0),
+                        roll: 0.0
+                    },
+                    duration: 3.0,
+                    complete: function() {
+                        currentIndex++;
+                        setTimeout(flyToNextPoint, 1000); // 1秒后飞往下一个点
+                    }
+                });
+            }
+            
+            flyToNextPoint(); // 开始飞行
+        });
+
+    </script>
+</body>
+
+</html>
